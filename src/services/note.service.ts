@@ -1,4 +1,4 @@
-import type { Note, CreateNoteInput, UpdateNoteInput } from "../models/note";
+import type { Note } from "../models/note";
 import { NoteRepository } from "../repositories/note.repository";
 
 export class NoteService {

@@ -1,4 +1,4 @@
-import type { Folder, FolderInput } from "../models/folder";
+import type { Folder } from "../models/folder";
 import { FolderRepository } from "../repositories/folder.repository";
 
 export class FolderService {
@@ -23,7 +23,7 @@ export class FolderService {
   }
 
   async createFolder(
-    body: FolderInput
+    body: any
   ): Promise<{ success: boolean; errors?: Record<string, string[]> }> {
     await this.folderRepository.create(body);
     return { success: true };

@@ -4,7 +4,3 @@ export interface Note {
   content: string;
   folderId: number | null;
 }
-
-export type CreateNoteInput = Omit<Note, "id">;
-
-export type UpdateNoteInput = Note;
