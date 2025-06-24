@@ -12,6 +12,7 @@ export class NoteController {
     this.getAllNotes = this.getAllNotes.bind(this);
     this.deleteNoteById = this.deleteNoteById.bind(this);
     this.createNote = this.createNote.bind(this);
+    this.updateNote = this.updateNote.bind(this);
   }
 
   async getNoteById(req: Request, res: Response) {
@@ -66,6 +67,22 @@ export class NoteController {
     res.json({
       success: true,
       message: "Note created successfully",
+    });
+  }
+
+  async updateNote(req: Request, res: Response) {
+    const { body } = req;
+    console.log("body ", body);
+    const didUpdate = await this.noteService.updateNote(body);
+    if (!didUpdate) {
+      res.status(400).json({
+        success: false,
+        message: "Failed to updated note",
+      });
+    }
+    res.json({
+      success: true,
+      message: "Note updated successfully",
     });
   }
 }

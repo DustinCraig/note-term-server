@@ -1,4 +1,4 @@
-import type { Note, NoteInput } from "../models/note";
+import type { Note, CreateNoteInput, UpdateNoteInput } from "../models/note";
 import { NoteRepository } from "../repositories/note.repository";
 
 export class NoteService {
@@ -7,24 +7,7 @@ export class NoteService {
     this.getAllNotes = this.getAllNotes.bind(this);
     this.deleteNoteById = this.deleteNoteById.bind(this);
     this.createNote = this.createNote.bind(this);
-  }
-
-  private isValidNoteInput(data: any): data is Omit<Note, "id"> {
-    if (!data) {
-      return false;
-    }
-
-    const typeValidations: Record<keyof NoteInput, (value: any) => boolean> = {
-      title: (v): v is string => typeof v === "string",
-      content: (v): v is string => typeof v === "string",
-      folderId: (v): v is number | null | undefined =>
-        v === undefined || null || typeof v === "number",
-    };
-
-    return Object.entries(typeValidations).every(([key, validator]) => {
-      const value = data[key];
-      return validator(value);
-    });
+    this.updateNote = this.updateNote.bind(this);
   }
 
   async getNoteById(id: number): Promise<Note | null> {
@@ -43,20 +26,23 @@ export class NoteService {
     return this.noteRepository.deleteById(id);
   }
 
-  async createNote(body: any): Promise<boolean> {
-    if (!this.isValidNoteInput(body)) {
-      console.error(
-        "Invalid note data: missing required fields or incorrect types"
-      );
-      return false;
-    }
-
+  async createNote(
+    body: any
+  ): Promise<{ success: boolean; errors?: Record<string, string[]> }> {
     const noteData = {
       ...body,
       folderId: body.folderId || null,
+      id: undefined,
     };
 
     await this.noteRepository.create(noteData);
-    return true;
+    return { success: true };
+  }
+
+  async updateNote(
+    body: any
+  ): Promise<{ success: boolean; errors?: Record<string, string[]> }> {
+    await this.noteRepository.updateById(body.id, body);
+    return { success: true };
   }
 }

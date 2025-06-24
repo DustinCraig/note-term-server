@@ -11,6 +11,7 @@ export class FolderController {
     this.getFolderById = this.getFolderById.bind(this);
     this.getAllFolders = this.getAllFolders.bind(this);
     this.deleteFolderById = this.deleteFolderById.bind(this);
+    this.createFolder = this.createFolder.bind(this);
   }
 
   async getFolderById(req: Request, res: Response) {
@@ -39,5 +40,20 @@ export class FolderController {
       success: true,
       message: "Folder deleted successfully",
     } as StandardResponse);
+  }
+
+  async createFolder(req: Request, res: Response) {
+    const { body } = req;
+    const didCreate = await this.folderService.createFolder(body);
+    if (!didCreate) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid folder input",
+      });
+    }
+    res.json({
+      success: true,
+      message: "Folder created successfully",
+    });
   }
 }

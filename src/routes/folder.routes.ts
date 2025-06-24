@@ -7,6 +7,7 @@ export default function folderRoutes(folderController: FolderController) {
   router.get("/:id", folderController.getFolderById);
   router.delete("/:id", folderController.deleteFolderById);
   router.get("/", folderController.getAllFolders);
+  router.post("/", folderController.createFolder);
 
   return router;
 }

@@ -5,4 +5,6 @@ export interface Note {
   folderId: number | null;
 }
 
-export type NoteInput = Omit<Note, "id">;
+export type CreateNoteInput = Omit<Note, "id">;
+
+export type UpdateNoteInput = Note;

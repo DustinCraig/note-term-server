@@ -1,4 +1,4 @@
-import { Folder } from "../models/folder";
+import type { Folder, FolderInput } from "../models/folder";
 import { FolderRepository } from "../repositories/folder.repository";
 
 export class FolderService {
@@ -6,6 +6,8 @@ export class FolderService {
     this.getFolderById = this.getFolderById.bind(this);
     this.getAllFolders = this.getAllFolders.bind(this);
     this.deleteFolderById = this.deleteFolderById.bind(this);
+    this.createFolder = this.createFolder.bind(this);
+    this.updateFolder = this.updateFolder.bind(this);
   }
 
   async getFolderById(id: number): Promise<Folder | null> {
@@ -18,5 +20,19 @@ export class FolderService {
 
   async deleteFolderById(id: number): Promise<void> {
     return this.folderRepository.deleteById(id);
+  }
+
+  async createFolder(
+    body: FolderInput
+  ): Promise<{ success: boolean; errors?: Record<string, string[]> }> {
+    await this.folderRepository.create(body);
+    return { success: true };
+  }
+
+  async updateFolder(
+    body: Folder
+  ): Promise<{ success: boolean; errors?: Record<string, string[]> }> {
+    await this.folderRepository.updateById(body.id, body);
+    return { success: true };
   }
 }

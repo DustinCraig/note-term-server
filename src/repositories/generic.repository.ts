@@ -48,12 +48,18 @@ export abstract class GenericRepository<T> {
   }
 
   async create(data: Omit<T, "id">): Promise<T> {
-    const columns = Object.keys(data).join(",");
-    const values = Object.keys(data)
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(
+        ([_, value]) => value !== undefined && value !== null
+      )
+    );
+
+    const columns = Object.keys(filteredData).join(",");
+    const values = Object.keys(filteredData)
       .map((_, index) => `$${index + 1}`)
       .join(",");
     const query = `INSERT INTO ${this.tableName} (${columns}) VALUES (${values})`;
-    const result = await this.pool.query(query, Object.values(data));
+    const result = await this.pool.query(query, Object.values(filteredData));
     return result.rows[0] as T;
   }
 
