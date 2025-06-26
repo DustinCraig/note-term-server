@@ -25,7 +25,12 @@ export class FolderService {
   async createFolder(
     body: any
   ): Promise<{ success: boolean; errors?: Record<string, string[]> }> {
-    await this.folderRepository.create(body);
+    const folderData = {
+      ...body,
+      id: undefined,
+    } as Folder;
+
+    await this.folderRepository.create(folderData);
     return { success: true };
   }
 
