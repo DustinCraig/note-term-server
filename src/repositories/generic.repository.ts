@@ -5,7 +5,7 @@ const dbPool = new Pool({
   connectionString: config.dbUrl,
 });
 
-export abstract class GenericRepository<T> {
+export abstract class GenericRepository<T extends object> {
   protected pool: Pool;
   protected tableName: string;
 
@@ -47,7 +47,7 @@ export abstract class GenericRepository<T> {
     await this.pool.query(query, [id]);
   }
 
-  async create(data: Omit<T, "id">): Promise<T> {
+  async create(data: Omit<T, "id">): Promise<number> {
     const filteredData = Object.fromEntries(
       Object.entries(data).filter(
         ([_, value]) => value !== undefined && value !== null
@@ -58,9 +58,15 @@ export abstract class GenericRepository<T> {
     const values = Object.keys(filteredData)
       .map((_, index) => `$${index + 1}`)
       .join(",");
-    const query = `INSERT INTO ${this.tableName} (${columns}) VALUES (${values})`;
+    const query = `INSERT INTO ${this.tableName} (${columns}) VALUES (${values}) RETURNING *`;
     const result = await this.pool.query(query, Object.values(filteredData));
-    return result.rows[0] as T;
+    const insertedRow = result.rows[0] as T;
+
+    if ("id" in insertedRow && insertedRow.id !== undefined) {
+      return Number(insertedRow.id);
+    }
+
+    return 0;
   }
 
   async updateById(id: number, data: Partial<T>): Promise<T> {
