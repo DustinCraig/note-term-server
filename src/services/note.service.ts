@@ -26,17 +26,15 @@ export class NoteService {
     return this.noteRepository.deleteById(id);
   }
 
-  async createNote(
-    body: any
-  ): Promise<{ success: boolean; errors?: Record<string, string[]> }> {
+  async createNote(body: any): Promise<number> {
     const noteData = {
       ...body,
       folderId: body.folderId || null,
       id: undefined,
-    };
+    } as Note;
 
-    await this.noteRepository.create(noteData);
-    return { success: true };
+    const id = await this.noteRepository.create(noteData);
+    return id;
   }
 
   async updateNote(

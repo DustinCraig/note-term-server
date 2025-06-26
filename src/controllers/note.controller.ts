@@ -57,8 +57,8 @@ export class NoteController {
 
   async createNote(req: Request, res: Response) {
     const { body } = req;
-    const didCreate = await this.noteService.createNote(body);
-    if (!didCreate) {
+    const id = await this.noteService.createNote(body);
+    if (!id) {
       res.status(400).json({
         success: false,
         message: "Invalid note input",
@@ -67,6 +67,7 @@ export class NoteController {
     res.json({
       success: true,
       message: "Note created successfully",
+      data: { id },
     });
   }
 
